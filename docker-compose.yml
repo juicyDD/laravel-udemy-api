@@ -1,0 +1,51 @@
+version: '3'
+services:
+  #PHP Service
+  laravel_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel_app
+    container_name: laravel_app
+    tty: true
+    environment:
+      SERVICE_NAME: laravel_app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+       - ./:/var/www
+       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+  #Nginx Service
+  laravel_webserver:
+    image: nginx:alpine
+    container_name: laravel_webserver
+    tty: true
+    ports:
+      - "9000:80"
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+
+  #MySQL Service
+#   laravel_db:
+#     platform: linux/x86_64
+#     image:  mysql:8.0
+#     container_name: laravel_db
+#     tty: true
+#     ports:
+#       - "9001:3306"
+#     environment:
+#       MYSQL_DATABASE: laravel_dev
+#       MYSQL_ROOT_PASSWORD: Admin@123
+#       TZ: Asia/Ho_Chi_Minh
+#       MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
+#     command: --default-authentication-plugin=mysql_native_password
+#     volumes:
+#       - laravel_dbdata:/var/lib/mysql
+
+#Volumes
+volumes:
+  laravel_dbdata:
